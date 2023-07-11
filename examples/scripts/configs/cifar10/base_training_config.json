@@ -1,8 +1,8 @@
 {
   "name": "BaseTrainerConfig",
-  "output_dir": "my_models_on_cifar",
+  "output_dir": "wandb_cifar",
   "batch_size": 100,
-  "num_epochs": 100,
+  "num_epochs": 1000,
   "learning_rate": 1e-4,
   "steps_saving": null,
   "steps_predict": 100,

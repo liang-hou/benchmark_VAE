@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 import torch
 import numpy as np
-from torchvision.transforms import PILToTensor
+from torchvision import transforms
 from tqdm import tqdm
 
 
@@ -53,13 +53,19 @@ def main():
         dataset = tv_datasets[dname]
         if "celeba" in dname.lower():
             train_kwarg = {"split": "train"}
-            val_kwarg = {"split": "val"}
+            val_kwarg = {"split": "valid"}
+            transform = transforms.Compose([
+                transforms.CenterCrop(140),
+                transforms.Resize(64),
+                transforms.PILToTensor()
+            ])
         else:
             train_kwarg = {"train": True}
             val_kwarg = {"train": False}
+            transform = transforms.PILToTensor()
 
         train_data = dataset(
-            dfolder, download=True, transform=PILToTensor(), **train_kwarg
+            dfolder, download=True, transform=transform, **train_kwarg
         )
         train_loader = torch.utils.data.DataLoader(
             train_data, batch_size=4, shuffle=False, num_workers=args.nthreads
@@ -69,7 +75,7 @@ def main():
         for b, (x, y) in enumerate(tqdm(train_loader)):
             train_batches.append(x.clone().detach().numpy())
 
-        val_data = dataset(dfolder, download=True, transform=PILToTensor(), **val_kwarg)
+        val_data = dataset(dfolder, download=True, transform=transform, **val_kwarg)
         val_loader = torch.utils.data.DataLoader(
             val_data, batch_size=4, shuffle=True, num_workers=args.nthreads
         )

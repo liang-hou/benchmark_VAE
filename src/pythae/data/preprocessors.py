@@ -16,7 +16,7 @@ import numpy as np
 import torch
 from typing_extensions import Literal
 
-from pythae.data.datasets import BaseDataset
+from pythae.data.datasets import BaseDataset, IndexedDataset
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ class DataProcessor:
         return data
 
     @staticmethod
-    def to_dataset(data: torch.Tensor, labels: Optional[torch.Tensor] = None):
+    def to_dataset(data: torch.Tensor, labels: Optional[torch.Tensor] = None, indexed: bool = False):
         """This method converts a set of ``torch.Tensor`` to a
         :class:`~pythae.data.datasets.BaseDataset`
 
@@ -87,7 +87,10 @@ class DataProcessor:
             labels = torch.ones(data.shape[0])
 
         labels = DataProcessor.to_tensor(labels)
-        dataset = BaseDataset(data, labels)
+        if indexed:
+            dataset = IndexedDataset(data, labels)
+        else:
+            dataset = BaseDataset(data, labels)
 
         return dataset
 

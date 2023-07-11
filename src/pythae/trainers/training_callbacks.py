@@ -351,7 +351,7 @@ class WandbCallback(TrainingCallback):  # pragma: no cover
 
         training_config_dict = training_config.to_dict()
 
-        self.run = self._wandb.init(project=project_name, entity=entity_name)
+        self.run = self._wandb.init(project=project_name, config=training_config_dict)
 
         if model_config is not None:
             model_config_dict = model_config.to_dict()

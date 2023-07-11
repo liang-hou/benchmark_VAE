@@ -129,6 +129,16 @@ class AutoConfig(BaseConfig):
             from ..wae_mmd import WAE_MMD_Config
 
             model_config = WAE_MMD_Config.from_json_file(json_path)
+        
+        elif config_name == "NPE_WAE_MMD_Config":
+            from ..npe_wae_mmd import NPE_WAE_MMD_Config
+
+            model_config = NPE_WAE_MMD_Config.from_json_file(json_path)
+
+        elif config_name == "OTM_Config":
+            from ..otm import OTM_Config
+
+            model_config = OTM_Config.from_json_file(json_path)
 
         elif config_name == "MAFConfig":
             from ..normalizing_flows import MAFConfig

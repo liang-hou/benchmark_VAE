@@ -6,6 +6,6 @@
     modalities should be added.
 """
 
-from .datasets import BaseDataset
+from .datasets import BaseDataset, IndexedDataset
 
-__all__ = ["BaseDataset"]
+__all__ = ["BaseDataset", "IndexedDataset"]

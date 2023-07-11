@@ -156,6 +156,7 @@ class TrainingPipeline(Pipeline):
         train_data: Union[np.ndarray, torch.Tensor, torch.utils.data.Dataset],
         eval_data: Union[np.ndarray, torch.Tensor, torch.utils.data.Dataset] = None,
         callbacks: List[TrainingCallback] = None,
+        indexed: bool = False,
     ):
         """
         Launch the model training on the provided data.
@@ -177,7 +178,7 @@ class TrainingPipeline(Pipeline):
 
             logger.info("Preprocessing train data...")
             train_data = self.data_processor.process_data(train_data)
-            train_dataset = self.data_processor.to_dataset(train_data)
+            train_dataset = self.data_processor.to_dataset(train_data, indexed=indexed)
 
         else:
             train_dataset = train_data
@@ -189,7 +190,7 @@ class TrainingPipeline(Pipeline):
             if isinstance(eval_data, np.ndarray) or isinstance(eval_data, torch.Tensor):
                 logger.info("Preprocessing eval data...\n")
                 eval_data = self.data_processor.process_data(eval_data)
-                eval_dataset = self.data_processor.to_dataset(eval_data)
+                eval_dataset = self.data_processor.to_dataset(eval_data, indexed=indexed)
 
             else:
                 eval_dataset = eval_data

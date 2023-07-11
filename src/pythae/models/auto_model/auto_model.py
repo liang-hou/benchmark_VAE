@@ -144,6 +144,16 @@ class AutoModel(nn.Module):
 
             model = WAE_MMD.load_from_folder(dir_path=dir_path)
 
+        elif model_name == "NPE_WAE_MMD_Config":
+            from ..npe_wae_mmd import NPE_WAE_MMD
+
+            model = NPE_WAE_MMD.load_from_folder(dir_path=dir_path)
+
+        elif model_name == "OTM_Config":
+            from ..otm import OTM
+
+            model = OTM.load_from_folder(dir_path=dir_path)
+
         elif model_name == "MAFConfig":
             from ..normalizing_flows import MAF
 

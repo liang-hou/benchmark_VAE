@@ -41,6 +41,8 @@ ap.add_argument(
         "beta_vae",
         "iwae",
         "wae",
+        "npe_wae",
+        "otm",
         "info_vae",
         "rae_gp",
         "rae_l2",
@@ -231,6 +233,8 @@ def main(args):
                 Encoder_ResNet_VQVAE_CELEBA as Encoder_VQVAE,
             )
 
+    from pythae.models.nn.benchmarks.npe import Encoder_NP
+
     try:
         logger.info(f"\nLoading {args.dataset} data...\n")
         train_data = (
@@ -264,6 +268,8 @@ def main(args):
     logger.info("------------------------------------------------------------\n")
 
     data_input_dim = tuple(train_data.shape[1:])
+
+    indexed = False
 
     if args.model_name == "ae":
         from pythae.models import AE, AEConfig
@@ -349,6 +355,48 @@ def main(args):
             encoder=Encoder_AE(model_config),
             decoder=Decoder_AE(model_config),
         )
+
+    elif args.model_name == "npe_wae":
+        from pythae.models import NPE_WAE_MMD, NPE_WAE_MMD_Config
+
+        if args.model_config is not None:
+            model_config = NPE_WAE_MMD_Config.from_json_file(args.model_config)
+
+        else:
+            model_config = NPE_WAE_MMD_Config()
+
+        model_config.input_dim = data_input_dim
+        model_config.num_samples = len(train_data)
+
+        model = NPE_WAE_MMD(
+            model_config=model_config,
+            encoder=Encoder_NP(model_config),
+            decoder=Decoder_AE(model_config),
+        )
+
+        indexed = True
+        eval_data = train_data
+
+    elif args.model_name == "otm":
+        from pythae.models import OTM, OTM_Config
+
+        if args.model_config is not None:
+            model_config = OTM_Config.from_json_file(args.model_config)
+
+        else:
+            model_config = OTM_Config()
+
+        model_config.input_dim = data_input_dim
+        model_config.num_samples = len(train_data)
+
+        model = OTM(
+            model_config=model_config,
+            encoder=Encoder_NP(model_config),
+            decoder=Decoder_AE(model_config),
+        )
+
+        indexed = True
+        eval_data = train_data
 
     elif args.model_name == "rae_l2":
         from pythae.models import RAE_L2, RAE_L2_Config
@@ -688,7 +736,7 @@ def main(args):
 
     pipeline = TrainingPipeline(training_config=training_config, model=model)
 
-    pipeline(train_data=train_data, eval_data=eval_data, callbacks=callbacks)
+    pipeline(train_data=train_data, eval_data=eval_data, callbacks=callbacks, indexed=indexed)
 
 
 if __name__ == "__main__":

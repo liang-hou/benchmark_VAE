@@ -77,3 +77,13 @@ class BaseDataset(Dataset):
         y = self.labels[index]
 
         return DatasetOutput(data=X, labels=y)
+
+
+class IndexedDataset(BaseDataset):
+
+    def __getitem__(self, index):
+        # Select sample
+        X = self.data[index]
+        y = self.labels[index]
+
+        return DatasetOutput(data=X, labels=y, index=index)
